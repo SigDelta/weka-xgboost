@@ -9,23 +9,142 @@ import weka.core.Capabilities.Capability;
 import java.util.*;
 
 
-
 /**
  * <!-- globalinfo-start -->
- *
+ * * Class for a XGBoost classifier.
+ * * <br><br>
  * <!-- globalinfo-end -->
- *
- * <!-- technical-bibtex-start --> BibTeX:
- *
- *
+ * <p>
+ * <!-- technical-bibtex-start -->
+ * * BibTeX:
+ * * <pre>
+ * * &#64;misc{missing_id
+ * * }
+ * * </pre>
+ * * <br><br>
+ * <!-- technical-bibtex-end -->
+ * <p>
  * <!-- options-start -->
- *
- *
+ * * Valid options are: <p>
+ * *
+ * * <pre> -booster &lt;string&gt;
+ * * </pre>
+ * *
+ * * <pre> -silent &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -nthread &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -num_pbuffer &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -num_feature &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -eta &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -gamma &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -max_depth &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -min_child_weight &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -max_delta_step &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -subsample &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -colsample_bytree &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -colsample_bylevel &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -lambda &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -alpha &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -tree_method &lt;string&gt;
+ * * </pre>
+ * *
+ * * <pre> -sketch_eps &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -scale_pos_weight &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -updater &lt;string&gt;
+ * * </pre>
+ * *
+ * * <pre> -refresh_leaf &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -process_type &lt;string&gt;
+ * * </pre>
+ * *
+ * * <pre> -sample_type &lt;string&gt;
+ * * </pre>
+ * *
+ * * <pre> -normalize_type &lt;string&gt;
+ * * </pre>
+ * *
+ * * <pre> -rate_drop &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -one_drop &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -skip_drop &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -lambda_bias &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -objective &lt;string&gt;
+ * * </pre>
+ * *
+ * * <pre> -num_class &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -base_score &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -eval_metric &lt;string&gt;
+ * * </pre>
+ * *
+ * * <pre> -seed &lt;integer&gt;
+ * * </pre>
+ * *
+ * * <pre> -tweedie_variance_power &lt;double&gt;
+ * * </pre>
+ * *
+ * * <pre> -output-debug-info
+ * *  If set, classifier is run in debug mode and
+ * *  may output additional info to the console</pre>
+ * *
+ * * <pre> -do-not-check-capabilities
+ * *  If set, classifier capabilities are not checked before classifier is built
+ * *  (use with caution).</pre>
+ * *
+ * * <pre> -num-decimal-places
+ * *  The number of decimal places for the output of numbers in the model (default 2).</pre>
+ * *
+ * * <pre> -batch-size
+ * *  The desired batch size for batch prediction  (default 100).</pre>
+ * *
  * <!-- options-end -->
  *
  * @author Michal Wasiluk (michal@wasiluk.io)
  */
-public class XGBoost extends AbstractClassifier {
+public class XGBoost extends AbstractClassifier implements TechnicalInformationHandler {
 
     private Booster booster;
 
@@ -139,7 +258,7 @@ public class XGBoost extends AbstractClassifier {
         float[] predict = predict1[0];
 
         double[] predictDouble = new double[predict.length];
-        for(int i=0; i< predict.length; i++) {
+        for (int i = 0; i < predict.length; i++) {
 //            predictDouble[i] = Double.valueOf(String.valueOf(predict[i]));
             predictDouble[i] = predict[i];
         }
@@ -165,7 +284,131 @@ public class XGBoost extends AbstractClassifier {
         return newVector.elements();
     }
 
-
+    /**
+     * Parses a given list of options.
+     * <p/>
+     * <p>
+     * <!-- options-start -->
+     * * Valid options are: <p>
+     * *
+     * * <pre> -booster &lt;string&gt;
+     * * </pre>
+     * *
+     * * <pre> -silent &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -nthread &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -num_pbuffer &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -num_feature &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -eta &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -gamma &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -max_depth &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -min_child_weight &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -max_delta_step &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -subsample &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -colsample_bytree &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -colsample_bylevel &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -lambda &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -alpha &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -tree_method &lt;string&gt;
+     * * </pre>
+     * *
+     * * <pre> -sketch_eps &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -scale_pos_weight &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -updater &lt;string&gt;
+     * * </pre>
+     * *
+     * * <pre> -refresh_leaf &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -process_type &lt;string&gt;
+     * * </pre>
+     * *
+     * * <pre> -sample_type &lt;string&gt;
+     * * </pre>
+     * *
+     * * <pre> -normalize_type &lt;string&gt;
+     * * </pre>
+     * *
+     * * <pre> -rate_drop &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -one_drop &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -skip_drop &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -lambda_bias &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -objective &lt;string&gt;
+     * * </pre>
+     * *
+     * * <pre> -num_class &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -base_score &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -eval_metric &lt;string&gt;
+     * * </pre>
+     * *
+     * * <pre> -seed &lt;integer&gt;
+     * * </pre>
+     * *
+     * * <pre> -tweedie_variance_power &lt;double&gt;
+     * * </pre>
+     * *
+     * * <pre> -output-debug-info
+     * *  If set, classifier is run in debug mode and
+     * *  may output additional info to the console</pre>
+     * *
+     * * <pre> -do-not-check-capabilities
+     * *  If set, classifier capabilities are not checked before classifier is built
+     * *  (use with caution).</pre>
+     * *
+     * * <pre> -num-decimal-places
+     * *  The number of decimal places for the output of numbers in the model (default 2).</pre>
+     * *
+     * * <pre> -batch-size
+     * *  The desired batch size for batch prediction  (default 100).</pre>
+     * *
+     * <!-- options-end -->
+     *
+     * @param options the list of options as an array of strings
+     * @throws Exception if an option is not supported
+     */
     @Override
     public void setOptions(String[] options) throws Exception {
 
@@ -280,7 +523,7 @@ public class XGBoost extends AbstractClassifier {
         }
     }
 
-    Integer getIntOptionValue(String name, String[] options){
+    Integer getIntOptionValue(String name, String[] options) {
         String paramStr = getOptionValue(name, options);
         if (paramStr == null) {
             return null;
@@ -297,26 +540,32 @@ public class XGBoost extends AbstractClassifier {
         }
     }
 
-    static void addStringOption(String name){
+    static void addStringOption(String name) {
         addStringOption(name, "");
     }
-    static void addStringOption(String name, String description){
+
+    static void addStringOption(String name, String description) {
         xgBoostParamsOptions.add(createOption(name, description, OptionWithType.ArgType.STRING));
     }
-    static void addIntOption(String name){
+
+    static void addIntOption(String name) {
         addIntOption(name, "");
     }
-    static void addIntOption(String name, String description){
+
+    static void addIntOption(String name, String description) {
         xgBoostParamsOptions.add(createOption(name, description, OptionWithType.ArgType.INTEGER));
     }
-    static void addDoubleOption(String name){
+
+    static void addDoubleOption(String name) {
         addDoubleOption(name, "");
     }
-    static void addDoubleOption(String name, String description){
+
+    static void addDoubleOption(String name, String description) {
         xgBoostParamsOptions.add(createOption(name, description, OptionWithType.ArgType.DOUBLE));
     }
-    static OptionWithType createOption(String name, String description, OptionWithType.ArgType argType){
-        String synopsis = "-" + name+ " <"+argType.name().toLowerCase()+">";
+
+    static OptionWithType createOption(String name, String description, OptionWithType.ArgType argType) {
+        String synopsis = "-" + name + " <" + argType.name().toLowerCase() + ">";
         return new OptionWithType(description == null ? name : description, name, 1, synopsis, argType);
     }
 
@@ -333,4 +582,8 @@ public class XGBoost extends AbstractClassifier {
     }
 
 
+    @Override
+    public TechnicalInformation getTechnicalInformation() {
+        return new TechnicalInformation(TechnicalInformation.Type.MISC);
+    }
 }
