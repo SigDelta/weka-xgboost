@@ -1,0 +1,72 @@
+# Template Description file for a Weka package
+# 
+
+# Package name (required)
+PackageName=XGBoost
+
+# Version (required)
+Version=0.1.0
+
+#Date (year-month-day)
+Date=2017-04-20
+
+# Title (required)
+Title=XGBoost classifier
+
+# Category (recommended)
+Category = Classification, Regression
+
+# Author (required)
+Author=Michal Wasiluk <michal@wasiluk.io>
+
+# Maintainer (required)
+Maintainer=Michal Wasiluk <michal@wasiluk.io>
+
+# License (required)
+License=MIT
+
+# Description (required)
+XGBoost classifier
+
+# Package URL for obtaining the package archive (required)
+PackageURL=
+
+# URL for further information
+URL=
+
+
+# Dependencies (format: packageName (equality/inequality version_number)
+Depends=weka (>=3.9.1)
+
+# Message to display in installation. Can be used to provide
+# special instructions (e.g. manual stuff needed to complete
+# the installation process). (optional).
+#MessageToDisplayOnInstallation=
+
+# Prevent package from being loaded by Weka if the named
+# files/directories are not present (relative to the package's
+# root directory). Useful for packages that require the user
+# to manually install some third-party library(s). (optional)
+#DoNotLoadIfFileNotPresent=lib/someLibrary.jar,otherStuff/important,...
+
+# Log message to be displayed if package can't be loaded due to
+# missing files/directories. (optional)
+#DoNotLoadIfFileNotPresentMessage=funkyPackage can't be loaded because some
+
+# Prevent package from being loaded by Weka if the named
+# classes can't be instantiated. Useful for packages that rely
+# on stuff that has to be installed manually (an example is
+# Java3D, which installs itself into the system JRE/JDK. (optional)
+#DoNotLoadIfClassNotPresent=com.some.class.from.some.Where,org.some.other.Class,...
+
+# Log message to be displayed if package can't be loaded due to 
+# missing classes. (optional).
+#DoNotLoadIfClassNotPresentMessage=funkyPackage can't be loaded because
+
+# Prevent package from being loaded by Weka if one or more (comma-separated)
+# environment variables or java properties are not set. (optional).
+#DoNotLoadIfEnvVarNotSet=
+
+# Log message to be displayed if package can't be loaded due to unset
+# environment variables or java properties.
+#DoNotLoadIfEnvVarNotSetMessage=
