@@ -213,6 +213,8 @@ import java.util.*;
  */
 public class XGBoost extends AbstractClassifier implements OptionHandler, TechnicalInformationHandler, Serializable {
 
+    private static final long serialVersionUID = 1141447363965993342L;
+
     private Booster booster;
 
     Map<String, Object> params = new HashMap<>();
@@ -308,6 +310,10 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
 
         Map<String, DMatrix> watches = new HashMap<>();
         watches.put("train", dmat);
+
+        if (!params.containsKey("num_class")) {
+            params.put("num_class", instances.numClasses());
+        }
 
         booster = ml.dmlc.xgboost4j.java.XGBoost.train(dmat, params, numRound, watches, null, null);
     }
