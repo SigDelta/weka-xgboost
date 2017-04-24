@@ -1,13 +1,17 @@
 package weka.classifiers.trees;
 
+import biz.k11i.xgboost.Predictor;
+import biz.k11i.xgboost.util.FVec;
 import ml.dmlc.xgboost4j.java.Booster;
+import ml.dmlc.xgboost4j.java.DMatrix;
+import ml.dmlc.xgboost4j.java.XGBoostError;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.trees.xgboost.DMatrixLoader;
 import weka.classifiers.trees.xgboost.OptionWithType;
 import weka.core.*;
-import ml.dmlc.xgboost4j.java.DMatrix;
 import weka.core.Capabilities.Capability;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -30,8 +34,14 @@ import java.util.*;
  * <!-- options-start -->
  * * Valid options are: <p>
  * *
+ * * <pre> -num_round &lt;integer&gt;
+ * * Number of boosting iterations</pre>
+ * *
  * * <pre> -force-probability-distribution
  * * Force probability distribution</pre>
+ * *
+ * * <pre> -use-predictor
+ * * Use predictor for inline (single instance) predictions.</pre>
  * *
  * * <pre> -booster &lt;string&gt;
  * * [default=gbtree]
@@ -292,6 +302,8 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
     }
 
     private Integer numRound = 20; // number of iterations
+    private boolean usePredictor = false;
+    private Predictor predictor;
 
 
     public String globalInfo() {
@@ -316,6 +328,12 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
         }
 
         booster = ml.dmlc.xgboost4j.java.XGBoost.train(dmat, params, numRound, watches, null, null);
+        if (usePredictor) {
+            // Load model and create Predictor
+            this.predictor = new Predictor(new ByteArrayInputStream(booster.toByteArray()));
+
+        }
+
     }
 
     @Override
@@ -324,17 +342,44 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
             return super.distributionForInstance(instance);
         }
 
-        DMatrix dmat = DMatrixLoader.instanceToDenseDMatrix(instance);
-        float[][] predict1 = booster.predict(dmat);
-        float[] predict = predict1[0];
+        return predictInstance(instance);
+    }
 
-        double[] predictDouble = new double[predict.length];
-        for (int i = 0; i < predict.length; i++) {
+    private double[] predictInstance(Instance instance) throws XGBoostError {
+        if (usePredictor) {
+            return predictWithPredictor(instance);
+        }
+        return predictWithDMatrix(instance);
+    }
+
+    private double[] predictWithDMatrix(Instance instance) throws XGBoostError {
+        DMatrix dmat = DMatrixLoader.instanceToDMatrix(instance);
+        float[][] predict = booster.predict(dmat);
+        double[] predictDouble = new double[predict[0].length];
+        for (int i = 0; i < predict[0].length; i++) {
 //            predictDouble[i] = Double.valueOf(String.valueOf(predict[i]));
-            predictDouble[i] = predict[i];
+            predictDouble[i] = predict[0][i];
+        }
+        return predictDouble;
+    }
+
+    private double[] predictWithPredictor(Instance instance) {
+        Map<Integer, Double> dataMap = new HashMap<>();
+
+        Attribute classAttribute = instance.classAttribute();
+        int classAttrIndex = classAttribute.index();
+        Enumeration<Attribute> attributeEnumeration = instance.enumerateAttributes();
+        while (attributeEnumeration.hasMoreElements()) {
+            Attribute attribute = attributeEnumeration.nextElement();
+            int attrIndex = attribute.index();
+            if (attrIndex == classAttrIndex) {
+                continue;
+            }
+            dataMap.put(attrIndex, instance.value(attribute));
         }
 
-        return predictDouble;
+        FVec fVecSparse = FVec.Transformer.fromMap(dataMap);
+        return predictor.predict(fVecSparse);
     }
 
     @Override
@@ -342,19 +387,10 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
         if (forceProbabilityDistribution && probabilityObjective.contains(params.get("objective"))) {
             return super.classifyInstance(instance);
         }
-        DMatrix dmat = DMatrixLoader.instanceToDMatrix(instance);
-        float[][] predict1 = booster.predict(dmat);
-        float[] predict = predict1[0];
-
-        double[] predictDouble = new double[predict.length];
-        for (int i = 0; i < predict.length; i++) {
-//            predictDouble[i] = Double.valueOf(String.valueOf(predict[i]));
-            predictDouble[i] = predict[i];
-        }
-
-        return predictDouble[0];
-
+        double[] predict = predictInstance(instance);
+        return predict[0];
     }
+
 
     /**
      * Returns an enumeration describing the available options.
@@ -366,7 +402,9 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
 
         Vector<Option> newVector = new Vector<Option>(3);
 
+        newVector.addElement(new Option("Number of boosting iterations", "num_round", 1, "-num_round <integer>"));
         newVector.addElement(new Option("Force probability distribution", "force-probability-distribution", 0, "-force-probability-distribution"));
+        newVector.addElement(new Option("Use predictor for inline (single instance) predictions.", "use-predictor", 0, "-use-predictor"));
 
         xgBoostParamsOptions.forEach(newVector::addElement);
 
@@ -382,8 +420,14 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
      * <!-- options-start -->
      * * Valid options are: <p>
      * *
+     * * <pre> -num_round &lt;integer&gt;
+     * * Number of boosting iterations</pre>
+     * *
      * * <pre> -force-probability-distribution
      * * Force probability distribution</pre>
+     * *
+     * * <pre> -use-predictor
+     * * Use predictor for inline (single instance) predictions.</pre>
      * *
      * * <pre> -booster &lt;string&gt;
      * * [default=gbtree]
@@ -575,6 +619,7 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
         }
 
         forceProbabilityDistribution = Utils.getFlag("force-probability-distribution", options);
+        usePredictor = Utils.getFlag("use-predictor", options);
 
         xgBoostParamsOptions.forEach(o -> checkOption(o, options));
 
@@ -597,6 +642,10 @@ public class XGBoost extends AbstractClassifier implements OptionHandler, Techni
 
         options.add("-num_round");
         options.add(String.valueOf(this.numRound));
+
+
+        options.add("-use_predictor");
+        options.add(String.valueOf(this.usePredictor));
 
 
         params.forEach((name, val) -> {

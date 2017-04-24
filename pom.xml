@@ -72,6 +72,18 @@
             <artifactId>xgboost4j</artifactId>
             <version>0.7</version>
         </dependency>
+        <dependency>
+            <groupId>biz.k11i</groupId>
+            <artifactId>xgboost-predictor</artifactId>
+            <version>0.2.0</version>
+        </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>bintray-komiya-atsushi-maven</id>
+            <url>http://dl.bintray.com/komiya-atsushi/maven</url>
+        </repository>
+    </repositories>
+
 
 </project>
