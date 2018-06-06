@@ -5,7 +5,7 @@
 PackageName=XGBoost
 
 # Version (required)
-Version=0.1.0
+Version=0.2.0
 
 #Date (year-month-day)
 Date=2017-04-20
@@ -32,7 +32,7 @@ XGBoost classifier
 PackageURL=
 
 # URL for further information
-URL=
+URL=https://github.com/SigDelta/weka-xgboost
 
 
 # Dependencies (format: packageName (equality/inequality version_number)

@@ -6,7 +6,7 @@
 
     <groupId>io.wasiluk</groupId>
     <artifactId>weka-xgboost</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <build>
         <plugins>
             <plugin>
@@ -70,12 +70,12 @@
         <dependency>
             <groupId>ml.dmlc</groupId>
             <artifactId>xgboost4j</artifactId>
-            <version>0.7</version>
+            <version>0.80-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>biz.k11i</groupId>
             <artifactId>xgboost-predictor</artifactId>
-            <version>0.2.0</version>
+            <version>0.3.0</version>
         </dependency>
     </dependencies>
     <repositories>
